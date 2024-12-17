@@ -63,6 +63,12 @@ def selectUserByRegion(region):
     myresult = mycursor.fetchall()
     return myresult
 
+def selectUserBannis():
+    sql = "SELECT * FROM "+table+" WHERE ban_date IS NOT NULL"
+    mycursor.execute(sql)
+    myresult = mycursor.fetchall()
+    return myresult
+
 def selectAllUsers():
     sql = "SELECT * FROM "+table+""
     mycursor.execute(sql)

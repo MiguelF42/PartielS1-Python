@@ -36,6 +36,69 @@ class User(object):
             return None
         nom = input('Nom : ')
         prenom = input('Prenom : ')
+
+        if region == 0 and User.getUserType(userSession) == "SuperAdmin":
+            regions = Database.selectAllRegions()
+            for reg in regions:
+                print(reg[0], " pour ", reg[1])
+            region = input('Region : ')
+        else :
+            region = userSession.get_region()
+        typeId = User.inputType(userSession)
+        user = User.__init__(nom, prenom, typeId, region)
+        print('Utilisateur créé')
+        return user
+    
+    def modifyUserByPrompt(userSession):
+        login = input('Login : ')
+        user = User.User.userFromDB(login)
+        if not user:
+            print('Utilisateur non trouvé')
+            return None
+        print('1 pour modifier le nom')
+        print('2 pour modifier le prénom')
+        print('3 pour modifier le type d\'utilisateur')
+        if User.getUserType(userSession) == "Super_Admin":
+            print('4 pour modifier la region')
+        print('5 pour modifier le login')
+        print('6 pour modifier le mot de passe')
+        print('7 pour retour')
+        choix2 = input('Votre choix : ')
+        if choix2 == '1':
+            nom = input('Nouveau nom : ')
+            user.set_nom(nom)
+        elif choix2 == '2':
+            prenom = input('Nouveau prénom : ')
+            user.set_pnom(prenom)
+        elif choix2 == '3':
+            user.set_type(User.inputType(userSession))
+        elif choix2 == '4' and User.getUserType(userSession) == "Super_Admin":
+            user.set_region(User.inputRegion(userSession))
+        elif choix2 == '5':
+            login = input('Nouveau login : ')
+            user.set_login(login)
+        elif choix2 == '6':
+            pwd = input('Nouveau mot de passe : ')
+            user.set_pwd(pwd)
+        elif choix2 == '7':
+            print('Retour')
+        else:
+            print("Choix invalide")
+
+    def deleteUserByPrompt(userSession=None):
+        login = input('Login : ')
+        user = User.User.userFromDB(login)
+        type = User.getUserType(userSession)
+        if type == "Admin" and userSession.getUserType() != "Super_Admin":
+            print("Vous n'avez pas les droits")
+            return None
+        if not user:
+            print('Utilisateur non trouvé')
+            return None
+        user.deleteUser()
+        print('Utilisateur supprimé')
+            
+    def inputType(userSession=None):
         types = Database.selectAllTypes()
         typeIds = []
         for type in types:
@@ -47,24 +110,25 @@ class User(object):
             print("Type invalide")
             if Database.selectTypeById(type)[1] == "Super_Admin":
                 print("Type invalide")
-            type = input('Type : ')
+            type = int(input('Type : '))
 
         if Database.selectTypeById(type)[1] == "Admin":
             if User.getUserType(userSession) != "Super_Admin":
                 print("Vous n'avez pas les droits")
                 return None
-
-        if region == 0 and User.getUserType(userSession) == "SuperAdmin":
-            regions = Database.selectAllRegions()
-            for reg in regions:
-                print(reg[0], " pour ", reg[1])
-            region = input('Region : ')
-        else :
-            region = userSession.get_region()
-
-        user = User.__init__(nom, prenom, typeId, region)
-        print('Utilisateur créé')
-        return user
+        return typeId
+    
+    def inputRegion(userSession=None):
+        regions = Database.selectAllRegions()
+        regionIds = []
+        for region in regions:
+            print(region[0], " pour ", region[1])
+            regionIds.append(region[0])
+        region = int(input('Region : '))
+        while region not in regionIds:
+            print("Region invalide")
+            region = int(input('Region : '))
+        return region
 
 ###### Les méthodes getter et setter pour les attributs de la classe User ######
     def get_id(self):
@@ -149,6 +213,13 @@ class User(object):
         for user in users:
             print(user)
         print("=========================================")
+
+    def afficherUsersBannis(): # Méthode Static : Afficher les utilisateurs bannis
+        users = Database.selectUserBannis()
+        print("======== Liste des utilisateurs bannis =========")
+        for user in users:
+            print(user)
+        print("================================================")
 
     def registerUser(self): # Méthode Enregistrant un utilisateur dans la base de données
         Database.insertUser(self.get_nom(), self.get_pnom(), self.get_nbEtud(), self.get_specialite(), self.get_login(), self.get_pwd(), self.get_isAdmin())

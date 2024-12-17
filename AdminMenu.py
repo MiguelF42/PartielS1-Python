@@ -15,7 +15,7 @@ def AdminMenu(userSession):
             User.User.createUserByPrompt(userSession.get_region())
         elif choix == '2':
             print('Afficher les utilisateurs')
-            User.User.afficherUsers()
+            User.User.afficherUsersByRegion()
         elif choix == '3':
             print('Modifier un utilisateur')
             login = input('Login : ')
@@ -61,12 +61,7 @@ def AdminMenu(userSession):
                     print('Choix invalide')
         elif choix == '4':
             print('Supprimer un utilisateur')
-            login = input('Login : ')
-            user = User.User.userFromDB(login)
-            if not user:
-                print('Utilisateur non trouvé')
-            else:
-                user.deleteUser()
+            User.User.deleteUserByPrompt(userSession)
         else:
             print('Choix invalide')
 
