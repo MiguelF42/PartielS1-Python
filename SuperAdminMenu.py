@@ -1,6 +1,6 @@
 import User
 
-def SuperAdminMenu(userSession):
+def printMenu():
     print('===============================Console SuperAdmin==============================')
     print('')
     print('1 pour créer un utilisateur')
@@ -8,15 +8,18 @@ def SuperAdminMenu(userSession):
     print('3 pour modifier un utilisateur')
     print('4 pour supprimer un utilisateur')
     print('5 pour afficher les utilisateurs par région')
-    print('10 pour afficher les utilisateurs par type')
     print('6 pour afficher les utilisateurs bannis')
-    # print('7 pour bannir un utilisateur')
-    # print('8 pour débannir un utilisateur')
-    # print('9 pour ajouter une région')
-    # print('10 pour supprimer une région')
-    # print('11 pour ajouter un type')
-    # print('12 pour supprimer un type')
-    print('13 pour quitter')
+    print('7 pour afficher les utilisateurs par type')
+    # print('8 pour bannir un utilisateur')
+    # print('9 pour débannir un utilisateur')
+    # print('10 pour ajouter une région')
+    # print('11 pour supprimer une région')
+    # print('12 pour ajouter un type')
+    # print('13 pour supprimer un type')
+    print('14 pour quitter')
+
+def SuperAdminMenu(userSession):
+    printMenu()
     choix=input('Votre choix : ')
 
     print('')
@@ -26,7 +29,7 @@ def SuperAdminMenu(userSession):
             User.User.createUserByPrompt(userSession)
         elif choix == '2':
             print('Afficher les utilisateurs')
-            User.User.afficherUsers(userSession.get_region(),userSession)
+            User.User.afficherUsers()
         elif choix == '3':
             print('Modifier un utilisateur')
             User.User.modifyUserByPrompt(userSession)
@@ -40,24 +43,11 @@ def SuperAdminMenu(userSession):
         elif choix == '6':
             print('Afficher les utilisateurs bannis')
             User.User.afficherUsersBannis()
-        elif choix == '13':
+        elif choix == '14':
             print('Quitter')
         else:
             print('Choix invalide')
 
         print('')
-        print('1 pour créer un utilisateur')
-        print('2 pour afficher les utilisateurs')
-        print('3 pour modifier un utilisateur')
-        print('4 pour supprimer un utilisateur')
-        print('5 pour afficher les utilisateurs par région')
-        print('10 pour afficher les utilisateurs par type')
-        print('6 pour afficher les utilisateurs bannis')
-        # print('7 pour bannir un utilisateur')
-        # print('8 pour débannir un utilisateur')
-        # print('9 pour ajouter une région')
-        # print('10 pour supprimer une région')
-        # print('11 pour ajouter un type')
-        # print('12 pour supprimer un type')
-        print('13 pour quitter')
+        printMenu()
         choix=input('Votre choix : ')

@@ -1,13 +1,18 @@
 import User
+import SuperAdminMenu
 import AdminMenu
 import datetime
 
-print('================Console Utilisateur===============')
-print('')
-print('1 pour se connecter')
-print('2 pour créer un compte')
-print('3 pour quitter')
 
+
+def printMenu():
+    print('================Console Utilisateur===============')
+    print('')
+    print('1 pour se connecter')
+    print('2 pour créer un compte')
+    print('3 pour quitter')
+
+printMenu()
 choix = input('Votre choix : ')
 
 while choix != '3':
@@ -19,12 +24,13 @@ while choix != '3':
             login = input('Login : ')
             pwd = input('Password : ')
             user = User.User.userFromDB(login)
-            if datetime.timedelta(minutes=5) < datetime.datetime.now() - user.ban:
-                user.unbanUser()
-            else :
-                print('Compte bloqué')
-                ban = True
-                continue
+            if user.Ban is not None :
+                if (datetime.datetime.now() - user.Ban).minutes < 15:
+                    user.unbanUser()
+                else :
+                    print('Compte bloqué')
+                    ban = True
+                    continue
             if not user or not user.VerifPWD(pwd):
                 print('Login incorrect')
                 attempts += 1
@@ -34,7 +40,9 @@ while choix != '3':
                     ban = True
             else :
                 attempts = 0
-                if user.isAdmin:
+                if user.TypeName == "Super_Admin":
+                    SuperAdminMenu.SuperAdminMenu(user)
+                elif user.TypeName == "Admin":
                     AdminMenu.AdminMenu(user)
                 else:
                     print('Connecté')
@@ -48,8 +56,5 @@ while choix != '3':
         User.User.registerUser(user)
     else:
         print('Choix invalide')
-    print('')
-    print('1 pour se connecter')
-    print('2 pour créer un compte')
-    print('3 pour quitter')
+    printMenu()
     choix = input('Votre choix : ')
