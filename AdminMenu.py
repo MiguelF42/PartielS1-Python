@@ -15,7 +15,7 @@ def AdminMenu(userSession):
             User.User.createUserByPrompt(userSession.get_region())
         elif choix == '2':
             print('Afficher les utilisateurs')
-            User.User.afficherUsersByRegion()
+            User.User.afficherUsersByRegion(userSession.get_region()) 
         elif choix == '3':
             print('Modifier un utilisateur')
             login = input('Login : ')

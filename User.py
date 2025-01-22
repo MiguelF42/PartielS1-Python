@@ -222,11 +222,11 @@ class User(object):
         print("================================================")
 
     def registerUser(self): # Méthode Enregistrant un utilisateur dans la base de données
-        Database.insertUser(self.get_nom(), self.get_pnom(), self.get_nbEtud(), self.get_specialite(), self.get_login(), self.get_pwd(), self.get_isAdmin())
+        Database.insertUser(self.get_nom(), self.get_prenom(), self.get_nbEtud(), self.get_specialite(), self.get_login(), self.get_pwd(), self.get_isAdmin())
         print("User enregistré")
 
     def updateUser(self): # Méthode pour mettre à jour un utilisateur
-        Database.updateUser(self.get_nom(), self.get_pnom(), self.get_nbEtud(), self.get_specialite(), self.get_login(), self.get_pwd(), self.get_isAdmin(), self.get_id())
+        Database.updateUser(self.get_nom(), self.get_prenom(), self.get_nbEtud(), self.get_specialite(), self.get_login(), self.get_pwd(), self.get_isAdmin(), self.get_id())
         print("User mis à jour")
 
     def deleteUser(self): # Méthode pour supprimer un utilisateur
@@ -245,7 +245,7 @@ class User(object):
 
     def GenLogin(self): # Méthode pour générer un login
         print ("Génération d'un login")
-        login = self.get_nom()[0] + self.get_pnom()
+        login = self.get_nom()[0] + self.get_prenom()
         print ("Login = ", login)
         return login.lower()
 

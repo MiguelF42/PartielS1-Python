@@ -1,8 +1,8 @@
-import Etudiant
+import User
 import AdminMenu
 import datetime
 
-print('================Console Etudiant===============')
+print('================Console Utilisateur===============')
 print('')
 print('1 pour se connecter')
 print('2 pour créer un compte')
@@ -18,7 +18,7 @@ while choix != '3':
         while not ban and attempts <= 3 and attempts > 0:
             login = input('Login : ')
             pwd = input('Password : ')
-            user = Etudiant.User.userFromDB(login)
+            user = User.User.userFromDB(login)
             if datetime.timedelta(minutes=5) < datetime.datetime.now() - user.ban:
                 user.unbanUser()
             else :
@@ -44,8 +44,8 @@ while choix != '3':
         pnom = input('Prénom : ')
         nbEtud = input('Numéro étudiant : ')
         specialite = input('Spécialité : ')
-        user = Etudiant.User(nom, pnom, nbEtud, specialite)
-        Etudiant.User.registerUser(user)
+        user = User.User(nom, pnom, nbEtud, specialite)
+        User.User.registerUser(user)
     else:
         print('Choix invalide')
     print('')
