@@ -26,24 +26,24 @@ def SuperAdminMenu(userSession):
     while choix != '13':
         if choix == '1':
             print('Créer un utilisateur')
-            User.User.createUserByPrompt(userSession)
+            User.User.createUserByPrompt(userSession) # Création d'un utilisateur via la console
         elif choix == '2':
             print('Afficher les utilisateurs')
-            User.User.afficherUsers()
+            User.User.afficherUsers() # Affichage de tous les utilisateurs
         elif choix == '3':
             print('Modifier un utilisateur')
-            User.User.modifyUserByPrompt(userSession)
+            User.User.modifyUserByPrompt(userSession) # Modification d'un utilisateur via la console
         elif choix == '4':
             print('Supprimer un utilisateur')
-            User.User.deleteUserByPrompt(userSession)
+            User.User.deleteUserByPrompt(userSession) # Suppression d'un utilisateur via la console
         elif choix == '5':
             print('Afficher les utilisateurs par région')
             region = User.User.inputRegion(userSession)
-            User.User.afficherUsersByRegion(region)
+            User.User.afficherUsersByRegion(region) # Affichage des utilisateurs par région
         elif choix == '6':
             print('Afficher les utilisateurs bannis')
-            User.User.afficherUsersBannis()
-        elif choix == '14':
+            User.User.afficherUsersBannis() # Affichage des utilisateurs bannis
+        elif choix == '14': 
             print('Quitter')
         else:
             print('Choix invalide')
