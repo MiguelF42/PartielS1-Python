@@ -1,18 +1,21 @@
 import User
 
-def AdminMenu(userSession):
-    print('================Console Admin===============')
+def printMenu():
+    print('===============================Console Admin==============================')
     print('')
     print('1 pour créer un utilisateur')
-    print('2 pour afficher les utilisateurs utilisateur')
-    print('3 pour modifier un utilisateurs')
+    print('2 pour afficher les utilisateurs')
+    print('3 pour modifier un utilisateur')
     print('4 pour supprimer un utilisateur')
     print('5 pour quitter')
+
+def AdminMenu(userSession):
+    printMenu()
     choix=input('Votre choix : ')
 
     while choix != '5':
         if choix == '1':
-            User.User.createUserByPrompt(userSession.get_region())
+            User.User.createUserByPrompt(userSession)
         elif choix == '2':
             print('Afficher les utilisateurs')
             User.User.afficherUsersByRegion(userSession.get_region()) 
@@ -66,9 +69,5 @@ def AdminMenu(userSession):
             print('Choix invalide')
 
         print('')
-        print('1 pour créer un utilisateur')
-        print('2 pour afficher les utilisateurs utilisateur')
-        print('3 pour modifier un utilisateurs')
-        print('4 pour supprimer un utilisateur')
-        print('5 pour quitter')
+        printMenu()
         choix=input('Votre choix : ')

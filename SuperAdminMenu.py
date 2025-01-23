@@ -23,7 +23,7 @@ def SuperAdminMenu(userSession):
     choix=input('Votre choix : ')
 
     print('')
-    while choix != '13':
+    while choix != '14':
         if choix == '1':
             print('Créer un utilisateur')
             User.User.createUserByPrompt(userSession) # Création d'un utilisateur via la console
@@ -43,6 +43,10 @@ def SuperAdminMenu(userSession):
         elif choix == '6':
             print('Afficher les utilisateurs bannis')
             User.User.afficherUsersBannis() # Affichage des utilisateurs bannis
+        elif choix == '7':
+            print('Afficher les utilisateurs par type')
+            type = User.User.inputType(userSession)
+            User.User.afficherUsersByType(type) # Affichage des utilisateurs par type
         elif choix == '14': 
             print('Quitter')
         else:

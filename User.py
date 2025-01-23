@@ -22,7 +22,7 @@ class User(object):
         else:
             self.Login = login
         if pwd == 0:
-            self.Password = self.NewPWD(12)
+            self.Password = self.NewPWD()
         else:
             self.Password = pwd
         self.Type = type
@@ -38,7 +38,7 @@ class User(object):
         nom = input('Nom : ')
         prenom = input('Prenom : ')
 
-        if userSession.TypeName == "Super_Admin":
+        if userSession.get_typeName() == "Super_Admin":
             regions = Database.selectAllRegions()
             for reg in regions:
                 print(reg[0], " pour ", reg[1])
@@ -46,7 +46,8 @@ class User(object):
         else :
             region = userSession.get_region()
         typeId = User.inputType(userSession)
-        user = User(nom, prenom, typeId, region)
+        pwd = User.inputPassword()
+        user = User(nom, prenom, typeId, region,pwd=pwd)
         print('Utilisateur créé')
         user.registerUser()
         return user
@@ -112,15 +113,14 @@ class User(object):
         types = Database.selectAllTypes()
         typeIds = []
         for type in types:
+            if (type[1] == "Super_Admin" or type[1] == "Admin") and userSession.get_typeName() != "Super_Admin":
+                continue
             print(type[0], " pour ", type[1])
             typeIds.append(type[0])
         type = int(input('Type : '))
         while type not in typeIds:
             print("Type invalide")
-            if Database.selectTypeById(type)[1] == "Super_Admin":
-                if User.getTypeName(userSession) != "Super_Admin":
-                    print("Vous n'avez pas les droits")
-            if Database.selectTypeById(type)[1] == "Admin":
+            if Database.selectTypeById(type)[1] == "Super_Admin" or Database.selectTypeById(type)[1] == "Admin":
                 if User.getTypeName(userSession) != "Super_Admin":
                     print("Vous n'avez pas les droits")
             type = int(input('Type : '))
@@ -236,6 +236,13 @@ class User(object):
             print(user)
         print("================================================")
 
+    def afficherUsersByType(type): # Méthode Static : Afficher les utilisateurs par type
+        users = Database.selectUserByType(type)
+        print("======== Liste des utilisateurs =========")
+        for user in users:
+            print(user)
+        print("=========================================")
+
     def registerUser(self): # Méthode Enregistrant un utilisateur dans la base de données
         Database.insertUser(self.get_nom(), self.get_prenom(), self.get_region(), self.get_type(), self.get_login(), self.get_pwd(), self.get_PwdModifiedAt())
         print("User enregistré")
@@ -265,12 +272,13 @@ class User(object):
         return login.lower()
 
     def NewPWD(length=12): # Méthode pour générer un nouveau mot de passe hashé
+        print(length)
         return User.hashPWD(User.GenPWD(length))
 
     def GenPWD(length=12): # Méthode pour générer un mot de passe
         print ("Génération d'un mot de passe")
         pwd = Password.generate_password(length)
-        print ("Mot de passe = ", pwd)
+        print ("Mot de passe =", pwd)
         return pwd
 
     def hashPWD(pwd, algo="sha256"): # Méthode pour hasher un mot de passe

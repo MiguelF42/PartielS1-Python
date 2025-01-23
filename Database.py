@@ -71,6 +71,13 @@ def selectUserBannis():
     myresult = mycursor.fetchall()
     return myresult
 
+def selectUserByType(type):
+    sql = "SELECT * FROM "+userTable+" WHERE type = %s"
+    val = [type]
+    mycursor.execute(sql, val)
+    myresult = mycursor.fetchall()
+    return myresult
+
 def selectAllUsers():
     sql = "SELECT * FROM "+userTable+""
     mycursor.execute(sql)
