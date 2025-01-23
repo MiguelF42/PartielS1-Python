@@ -1,3 +1,5 @@
 import Database
+import Password
 
-Database.insertUser("nom", "prenom", 0, "specialite", "login", "password")
+pwd = Password.hash_password_sha256("sadmin")
+Database.insertUser("admin", "super", 1, 1, "sadmin", pwd, None)

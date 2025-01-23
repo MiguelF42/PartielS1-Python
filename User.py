@@ -12,7 +12,7 @@ import Password
     
 class User(object):
 ### constructeur de la nouvelle classe User
-    def __init__(self, nom, pnom, type, region, login="", pwd="", pwdModifiedAt="",id=0,ban=False):
+    def __init__(self, nom, pnom, type, region, login="", pwd=0, pwdModifiedAt=None,id=0,ban=False):
         self.Nom=nom.upper()  ## 2 attributs Nom et Prenom en public, accessible à tous
         self.Prenom=pnom.title()
         ##self.Nom = nom
@@ -21,8 +21,8 @@ class User(object):
             self.Login = self.GenLogin()
         else:
             self.Login = login
-        if pwd == "":
-            self.Password = self.hashPWD(self.GenPWD())
+        if pwd == 0:
+            self.Password = self.NewPWD(12)
         else:
             self.Password = pwd
         self.Type = type
@@ -30,14 +30,15 @@ class User(object):
         self.PwdModifiedAt = pwdModifiedAt
         self.Id = id
         self.Ban = ban
+        self.TypeName = self.getTypeName()
 
-    def createUserByPrompt(region=0,userSession=None):
+    def createUserByPrompt(userSession=None): # Méthode Static : Création d'un utilisateur par prompt
         if userSession == None:
             return None
         nom = input('Nom : ')
         prenom = input('Prenom : ')
 
-        if region == 0 and User.getUserType(userSession) == "SuperAdmin":
+        if userSession.TypeName == "Super_Admin":
             regions = Database.selectAllRegions()
             for reg in regions:
                 print(reg[0], " pour ", reg[1])
@@ -45,23 +46,24 @@ class User(object):
         else :
             region = userSession.get_region()
         typeId = User.inputType(userSession)
-        user = User.__init__(nom, prenom, typeId, region)
+        user = User(nom, prenom, typeId, region)
         print('Utilisateur créé')
+        user.registerUser()
         return user
     
-    def modifyUserByPrompt(userSession):
+    def modifyUserByPrompt(userSession): # Méthode Static : Modifier un utilisateur par prompt
         login = input('Login : ')
-        user = User.User.userFromDB(login)
+        user = User.userFromDB(login)
         if not user:
             print('Utilisateur non trouvé')
             return None
         print('1 pour modifier le nom')
         print('2 pour modifier le prénom')
         print('3 pour modifier le type d\'utilisateur')
-        if User.getUserType(userSession) == "Super_Admin":
+        if User.get_typeName(userSession) == "Super_Admin":
             print('4 pour modifier la region')
         print('5 pour modifier le login')
-        print('6 pour modifier le mot de passe')
+        print('6 pour régénérer un nouveau mot de passe')
         print('7 pour retour')
         choix2 = input('Votre choix : ')
         if choix2 == '1':
@@ -69,27 +71,28 @@ class User(object):
             user.set_nom(nom)
         elif choix2 == '2':
             prenom = input('Nouveau prénom : ')
-            user.set_pnom(prenom)
+            user.set_prenom(prenom)
         elif choix2 == '3':
             user.set_type(User.inputType(userSession))
-        elif choix2 == '4' and User.getUserType(userSession) == "Super_Admin":
+        elif choix2 == '4' and User.get_typeName(userSession) == "Super_Admin":
             user.set_region(User.inputRegion(userSession))
         elif choix2 == '5':
             login = input('Nouveau login : ')
             user.set_login(login)
         elif choix2 == '6':
-            pwd = input('Nouveau mot de passe : ')
+            pwd = User.inputPassword()
             user.set_pwd(pwd)
         elif choix2 == '7':
             print('Retour')
         else:
             print("Choix invalide")
+        user.updateUser()
 
-    def deleteUserByPrompt(userSession=None):
+    def deleteUserByPrompt(userSession=None): # Méthode Static : Supprimer un utilisateur par prompt
         login = input('Login : ')
-        user = User.User.userFromDB(login)
-        type = User.getUserType(userSession)
-        if type == "Admin" and userSession.getUserType() != "Super_Admin":
+        user = User.userFromDB(login)
+        type = User.get_typeName(userSession)
+        if type == "Admin" and userSession.get_typeName() != "Super_Admin":
             print("Vous n'avez pas les droits")
             return None
         if not user:
@@ -98,27 +101,32 @@ class User(object):
         user.deleteUser()
         print('Utilisateur supprimé')
             
-    def inputType(userSession=None):
+    def inputPassword():
+        pwd = int(input('Longueur du mot de passe (Defaut = 12) : '))
+        while not pwd.is_integer():
+            print("Veuillez saisir un nombre")
+            pwd = int(input('Longueur du mot de passe (Defaut = 12) : '))
+        return User.NewPWD(pwd)
+
+    def inputType(userSession=None): # Méthode Static : Saisir un type
         types = Database.selectAllTypes()
         typeIds = []
         for type in types:
             print(type[0], " pour ", type[1])
             typeIds.append(type[0])
         type = int(input('Type : '))
-        typeId = 0 
         while type not in typeIds:
             print("Type invalide")
             if Database.selectTypeById(type)[1] == "Super_Admin":
-                print("Type invalide")
+                if User.getTypeName(userSession) != "Super_Admin":
+                    print("Vous n'avez pas les droits")
+            if Database.selectTypeById(type)[1] == "Admin":
+                if User.getTypeName(userSession) != "Super_Admin":
+                    print("Vous n'avez pas les droits")
             type = int(input('Type : '))
-
-        if Database.selectTypeById(type)[1] == "Admin":
-            if User.getUserType(userSession) != "Super_Admin":
-                print("Vous n'avez pas les droits")
-                return None
-        return typeId
+        return type
     
-    def inputRegion(userSession=None):
+    def inputRegion(userSession=None): # Méthode Static : Saisir une région
         regions = Database.selectAllRegions()
         regionIds = []
         for region in regions:
@@ -158,6 +166,9 @@ class User(object):
     def get_ban(self):
         return self.Ban
     
+    def get_typeName(self):
+        return self.TypeName
+    
     def set_prenom(self, pnom):
         self.Prenom = pnom.title()
         User.updateUser(self)
@@ -171,7 +182,7 @@ class User(object):
         User.updateUser(self)
 
     def set_pwd(self, pwd):
-        self.Password = self.hashPWD(pwd)
+        self.Password = pwd
         User.updateUser(self)
 
     def set_PwdModifiedAt(self, pwdModifiedAt):
@@ -181,6 +192,7 @@ class User(object):
     def set_type(self, type):
         self.Type = type
         User.updateUser(self)
+        self.__set_typeName()
 
     def set_region(self, region):
         self.Region = region
@@ -190,11 +202,14 @@ class User(object):
         self.Ban = ban
         User.updateUser(self)
 
+    def __set_typeName(self):
+        self.TypeName = self.getTypeName()
+
 ###### Les méthodes de la classe User pour la base de données ######
     
     def userFromDB(login): # Méthode Static : Création d'une instance de User à partir de la base de données
         user = Database.selectUser(login.lower())
-        self = User(user[4], user[3], user[5], user[6], user[1], user[2], user[7], user[0], user[8])
+        self = User(user[2], user[1], user[6], user[7], user[3], user[4], user[5], user[0], user[8])
         return self
 
     def Afficher_User(self): # Méthode pour afficher les attributs de la classe User
@@ -222,11 +237,11 @@ class User(object):
         print("================================================")
 
     def registerUser(self): # Méthode Enregistrant un utilisateur dans la base de données
-        Database.insertUser(self.get_nom(), self.get_pnom(), self.get_nbEtud(), self.get_specialite(), self.get_login(), self.get_pwd(), self.get_isAdmin())
+        Database.insertUser(self.get_nom(), self.get_prenom(), self.get_region(), self.get_type(), self.get_login(), self.get_pwd(), self.get_PwdModifiedAt())
         print("User enregistré")
 
     def updateUser(self): # Méthode pour mettre à jour un utilisateur
-        Database.updateUser(self.get_nom(), self.get_pnom(), self.get_nbEtud(), self.get_specialite(), self.get_login(), self.get_pwd(), self.get_isAdmin(), self.get_id())
+        Database.updateUser(self.get_nom(), self.get_prenom(), self.get_region(), self.get_type(), self.get_login(), self.get_pwd(), self.get_PwdModifiedAt(), self.get_id())
         print("User mis à jour")
 
     def deleteUser(self): # Méthode pour supprimer un utilisateur
@@ -238,24 +253,27 @@ class User(object):
     def unbanUser(self): # Méthode pour débannir un utilisateur
         self.set_ban(False)
 
-    def getUserType(userSession):
+    def getTypeName(userSession):
         return Database.selectTypeById(userSession.get_type())[1]
 
 ###### Les méthodes pour générer, hasher et vérifier un mot de passe ######
 
     def GenLogin(self): # Méthode pour générer un login
         print ("Génération d'un login")
-        login = self.get_nom()[0] + self.get_pnom()
+        login = self.get_nom()[0] + self.get_prenom()
         print ("Login = ", login)
         return login.lower()
 
-    def GenPWD(self): # Méthode pour générer un mot de passe
+    def NewPWD(length=12): # Méthode pour générer un nouveau mot de passe hashé
+        return User.hashPWD(User.GenPWD(length))
+
+    def GenPWD(length=12): # Méthode pour générer un mot de passe
         print ("Génération d'un mot de passe")
-        pwd = Password.generate_password()
+        pwd = Password.generate_password(length)
         print ("Mot de passe = ", pwd)
         return pwd
 
-    def hashPWD(self, pwd, algo="sha256"): # Méthode pour hasher un mot de passe
+    def hashPWD(pwd, algo="sha256"): # Méthode pour hasher un mot de passe
         print ("Hashage du mot de passe")
         if algo == "sha256":
             return Password.hash_password_sha256(pwd)
