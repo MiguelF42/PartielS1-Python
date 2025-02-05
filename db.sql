@@ -37,3 +37,5 @@ INSERT INTO `hospital_regions`(`region`) VALUES('Rennes');
 INSERT INTO `hospital_regions`(`region`) VALUES('Strasbourg');
 INSERT INTO `hospital_regions`(`region`) VALUES('Grenoble');
 INSERT INTO `hospital_regions`(`region`) VALUES('Nantes');
+
+INSERT INTO `hospital_users`(`fname`, `lname`, `login`, `password`, `type`, `region`) VALUES('Super', 'Admin', 'sadmin', '9f5ba68f21489544d985797d58847b65e9a22c4981aeccafc96b351e84df254c', 1, 1);

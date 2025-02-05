@@ -21,8 +21,8 @@ class User(object):
             self.Login = self.GenLogin()
         else:
             self.Login = login
-        if pwd == 0:
-            self.Password = self.NewPWD()
+        if isinstance(pwd,int):
+            self.Password = self.NewPWD(pwd)
         else:
             self.Password = pwd
         self.Type = type
@@ -267,7 +267,7 @@ class User(object):
 
     def GenLogin(self): # Méthode pour générer un login
         print ("Génération d'un login")
-        login = self.get_nom()[0] + self.get_prenom()
+        login = self.get_prenom()[0] + self.get_nom()
         print ("Login = ", login)
         return login.lower()
 
@@ -277,6 +277,7 @@ class User(object):
 
     def GenPWD(length=12): # Méthode pour générer un mot de passe
         print ("Génération d'un mot de passe")
+        x = length if length >= 8 else 12
         pwd = Password.generate_password(length)
         print ("Mot de passe =", pwd)
         return pwd

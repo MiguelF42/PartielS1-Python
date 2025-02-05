@@ -22,10 +22,10 @@ while choix != '3':
         attempts = 1
         while not ban and attempts <= 3 and attempts > 0:
             login = input('Login : ')
-            pwd = input('Password : ')
+            pwd = input('Mot de passe : ')
             user = User.User.userFromDB(login)
             if user.Ban is not None :
-                if (datetime.datetime.now() - user.Ban).minutes < 15:
+                if (datetime.datetime.now() - user.Ban) > datetime.timedelta(minutes=15) :
                     user.unbanUser()
                 else :
                     print('Compte bloqué')
@@ -35,7 +35,7 @@ while choix != '3':
                 print('Login incorrect')
                 attempts += 1
                 if attempts > 3:
-                    print('Compte bloqué durant 5min')
+                    print('Compte bloqué durant 15min')
                     user.banUser()
                     ban = True
             else :
