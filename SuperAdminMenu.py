@@ -1,3 +1,4 @@
+import Prompt
 import User
 
 def printMenu():
@@ -26,26 +27,26 @@ def SuperAdminMenu(userSession):
     while choix != '14':
         if choix == '1':
             print('Créer un utilisateur')
-            User.User.createUserByPrompt(userSession) # Création d'un utilisateur via la console
+            Prompt.Prompt.createUserByPrompt(userSession) # Création d'un utilisateur via la console
         elif choix == '2':
             print('Afficher les utilisateurs')
             User.User.afficherUsers() # Affichage de tous les utilisateurs
         elif choix == '3':
             print('Modifier un utilisateur')
-            User.User.modifyUserByPrompt(userSession) # Modification d'un utilisateur via la console
+            Prompt.Prompt.modifyUserByPrompt(userSession) # Modification d'un utilisateur via la console
         elif choix == '4':
             print('Supprimer un utilisateur')
-            User.User.deleteUserByPrompt(userSession) # Suppression d'un utilisateur via la console
+            Prompt.Prompt.deleteUserByPrompt(userSession) # Suppression d'un utilisateur via la console
         elif choix == '5':
             print('Afficher les utilisateurs par région')
-            region = User.User.inputRegion(userSession)
+            region = Prompt.Prompt.inputRegion(userSession)
             User.User.afficherUsersByRegion(region) # Affichage des utilisateurs par région
         elif choix == '6':
             print('Afficher les utilisateurs bannis')
             User.User.afficherUsersBannis() # Affichage des utilisateurs bannis
         elif choix == '7':
             print('Afficher les utilisateurs par type')
-            type = User.User.inputType(userSession)
+            type = Prompt.Prompt.inputType(userSession)
             User.User.afficherUsersByType(type) # Affichage des utilisateurs par type
         elif choix == '14': 
             print('Quitter')

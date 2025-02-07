@@ -104,3 +104,9 @@ def banUser(id):
     val = [id]
     mycursor.execute(sql, val)
     mydb.commit()
+
+def unbanUser(id):
+    sql = "UPDATE "+userTable+" SET ban_date = NULL WHERE id = %s"
+    val = [id]
+    mycursor.execute(sql, val)
+    mydb.commit()
