@@ -61,6 +61,31 @@ class Prompt:
             print("Choix invalide")
         user.updateUser()
 
+    def banUserByPrompt(userSession=None): # Méthode Static : Bannir un utilisateur par prompt
+        if userSession == None:
+            return None
+        login = input('Login : ')
+        user = User.User.userFromDB(login)
+        if not user:
+            print('Utilisateur non trouvé')
+            return None
+        user.banUser()
+        print('Utilisateur banni')
+    
+    def unbanUserByPrompt(userSession=None): # Méthode Static : Débannir un utilisateur par prompt
+        if userSession == None:
+            return None
+        login = input('Login : ')
+        user = User.User.userFromDB(login)
+        if not user:
+            print('Utilisateur non trouvé')
+            return None
+        if not user.get_ban():
+            print('Utilisateur non banni')
+            return None
+        user.unbanUser()
+        print('Utilisateur débanni')
+
     def deleteUserByPrompt(userSession=None): # Méthode Static : Supprimer un utilisateur par prompt
         if userSession == None:
             return None
