@@ -18,7 +18,7 @@ CREATE TABLE `hospital_users`(
     `lname` VARCHAR(255) NOT NULL,
     `login` VARCHAR(32) NOT NULL,
     `password` VARCHAR(1024) NOT NULL,
-    `pwd_modified_at` DATETIME,
+    `pwd_modified_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `type` INT UNSIGNED NOT NULL,
     `region` INT UNSIGNED NOT NULL,
     `ban_date` DATETIME,

@@ -13,11 +13,7 @@ def printMenu():
     print('7 pour afficher les utilisateurs par type')
     print('8 pour bannir un utilisateur')
     print('9 pour débannir un utilisateur')
-    # print('10 pour ajouter une région')
-    # print('11 pour supprimer une région')
-    # print('12 pour ajouter un type')
-    # print('13 pour supprimer un type')
-    print('14 pour quitter')
+    print('10 pour quitter')
 
 def SuperAdminMenu(userSession):
     printMenu()
@@ -50,11 +46,11 @@ def SuperAdminMenu(userSession):
             User.User.afficherUsersByType(type) # Affichage des utilisateurs par type
         elif choix == '8':
             print('Bannir un utilisateur')
-            Prompt.Prompt.banUserByPrompt(userSession)
+            Prompt.Prompt.banUserByPrompt(userSession) # Bannissement d'un utilisateur via la console
         elif choix == '9':
             print('Débannir un utilisateur')
-            Prompt.Prompt.unbanUserByPrompt(userSession)
-        elif choix == '14': 
+            Prompt.Prompt.unbanUserByPrompt(userSession) # Débannissement d'un utilisateur via la console
+        elif choix == '10': 
             print('Quitter')
         else:
             print('Choix invalide')

@@ -44,9 +44,9 @@ def selectAllRegions():
 
 ###===================== User =====================###
 # Insert Request
-def insertUser(nom, prenom, region, type, login, password, pwdModifiedAt):
-    sql = "INSERT INTO "+userTable+" (lname, fname, region, type, login, password, pwd_modified_at) VALUES (%s, %s, %s, %s, %s, %s, %s)"
-    val = (nom, prenom, region, type, login, password, pwdModifiedAt)
+def insertUser(nom, prenom, region, type, login, password):
+    sql = "INSERT INTO "+userTable+" (lname, fname, region, type, login, password) VALUES (%s, %s, %s, %s, %s, %s)"
+    val = (nom, prenom, region, type, login, password)
     mycursor.execute(sql, val)
     mydb.commit()
 
@@ -85,9 +85,15 @@ def selectAllUsers():
     return myresult
 
 # Update Request
-def updateUser(nom, prenom, region, type, login, password, pwdModifiedAt, id):
-    sql = "UPDATE "+userTable+" SET lname = %s, fname = %s, region = %s, type = %s, password = %s, login = %s, pwd_modified_at = %s  WHERE id = %s"
-    val = (nom, prenom, region, type, password, login, pwdModifiedAt, id)
+def updateUser(nom, prenom, region, type, login, id):
+    sql = "UPDATE "+userTable+" SET lname = %s, fname = %s, region = %s, type = %s, login = %s  WHERE id = %s"
+    val = (nom, prenom, region, type, login, id)
+    mycursor.execute(sql, val)
+    mydb.commit()
+
+def updateUserPassword(password, id):
+    sql = "UPDATE "+userTable+" SET password = %s, pwd_modified_at = NOW() WHERE id = %s"
+    val = (password, id)
     mycursor.execute(sql, val)
     mydb.commit()
 
