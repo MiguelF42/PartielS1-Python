@@ -103,7 +103,7 @@ class User(object):
 ###### Les méthodes de la classe User pour la base de données ######
     
     def userFromDB(login): # Méthode Static : Création d'une instance de User à partir de la base de données
-        user = Database.selectUser(login.lower()) # Récupération de l'utilisateur par login
+        user = Database.selectUser(login.strip().lower()) # Récupération de l'utilisateur par login
         self = User(user[2], user[1], user[6], user[7], user[3], user[4], user[5], user[0], user[8]) # Création de l'instance de User
         return self
 
